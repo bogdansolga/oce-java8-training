@@ -17,16 +17,16 @@ import java.util.function.Function;
  */
 public class Java8IDEsIntegration {
 
-    private static final List<String> words = new ArrayList<>(Arrays.asList("I want a holiday, not just a weekend".split("\\s")));
+    private static final List<String> HOLIDAY_WISH = new ArrayList<>(Arrays.asList("I want a holiday, not just a weekend".split("\\s")));
 
     // Double Brace initialization - http://stackoverflow.com/questions/1958636/what-is-double-brace-initialization-in-java
     // http://blog.jooq.org/2014/12/08/dont-be-clever-the-double-curly-braces-anti-pattern/
-    private static final Map<Integer, String> holidayLengths = new HashMap<Integer, String>() {{
+    private static final Map<Integer, String> HOLIDAYS = new HashMap<Integer, String>() {{
         put( 3, "too short");
         put(10, "decent");
     }};
 
-    private static final List<Integer> freeMonthNumbers = Arrays.asList(1, 5, 9);
+    private static final List<Integer> MONTH_NUMBERS = Arrays.asList(1, 5, 9);
 
     public static void main(String[] args) {
         collectionsUsage();
@@ -41,18 +41,18 @@ public class Java8IDEsIntegration {
     }
 
     private static void collectionsUsage() {
-        for (String word : words) {
+        for (String word : HOLIDAY_WISH) {
             System.out.println(word);
         }
 
-        final Iterator<String> iterator = words.iterator();
+        final Iterator<String> iterator = HOLIDAY_WISH.iterator();
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
     }
 
     private static void comparatorUsage() {
-        words.sort(new Comparator<String>() {
+        HOLIDAY_WISH.sort(new Comparator<String>() {
             @Override
             public int compare(String first, String second) {
                 return first.compareTo(second);
@@ -61,36 +61,36 @@ public class Java8IDEsIntegration {
     }
 
     private static void streamCleanup() {
-        words.stream().forEach(item -> System.out.println(item));
+        HOLIDAY_WISH.stream().forEach(item -> System.out.println(item));
 
-        words.removeIf(item -> item.isEmpty());
+        HOLIDAY_WISH.removeIf(item -> item.isEmpty());
 
-        freeMonthNumbers.stream().forEach(item -> {
+        MONTH_NUMBERS.stream().forEach(item -> {
             Optional.ofNullable(item).ifPresent(it -> System.out.println(it));
         });
 
-        if (!freeMonthNumbers.stream()
-                             .filter(monthId -> monthId > 10)
-                             .findFirst()
-                             .isPresent()) {
+        if (!MONTH_NUMBERS.stream()
+                          .filter(monthId -> monthId > 10)
+                          .findFirst()
+                          .isPresent()) {
             System.out.println("Do operation on it");
         }
     }
 
     private static void optionalUsage() {
-        words.stream().filter(item -> item.length() > 2).findAny().get();
+        HOLIDAY_WISH.stream().filter(item -> item.length() > 2).findAny().get();
 
-        words.stream().max((first, second) -> first.compareTo(second)).get();
+        HOLIDAY_WISH.stream().max((first, second) -> first.compareTo(second)).get();
     }
 
     private static void mapUsage() {
-        holidayLengths.computeIfAbsent(1, new Function<Integer, String>() {
+        HOLIDAYS.computeIfAbsent(1, new Function<Integer, String>() {
             @Override
             public String apply(Integer integer) {
                 return "way too short";
             }
         });
 
-        holidayLengths.forEach((key, value) -> System.out.println(key + " is " + value));
+        HOLIDAYS.forEach((key, value) -> System.out.println(key + " is " + value));
     }
 }
