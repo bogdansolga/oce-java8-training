@@ -106,15 +106,17 @@ public class FunctionsMain {
         // using a Consumer on the retrieved items
         descriptions.forEach(printer());
 
-        // TODO try other Product Functions
+        // TODO add a method to retrieve all the monitors which have a price bigger than 50
+
+        // TODO add a method to retrieve all the products which have a price bigger than 100
     }
 
     private static void sectionFunctions() {
-        // TODO try a few Section Functions
+        // TODO add a method to retrieve the sections which have more than 2 products
     }
 
     private static void managerFunctions() {
-        // TODO try a few Manager Functions
+        // TODO add a method to retrieve the manager named Jane
     }
 
     private static Consumer<String> printer() {
