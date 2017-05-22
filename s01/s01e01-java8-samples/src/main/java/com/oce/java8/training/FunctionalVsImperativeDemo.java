@@ -10,6 +10,14 @@ public class FunctionalVsImperativeDemo {
         final List<String> strings = Arrays.asList("I want a holiday, not just a weekend".split(" "));
 
         // imperative processing
+        imperativeProcessing(strings);
+
+
+        // functional processing
+        functionalProcessing(strings);
+    }
+
+    private static void imperativeProcessing(final List<String> strings) {
         final Iterator<String> iterator = strings.iterator();
         while (iterator.hasNext()) {
             String currentValue = iterator.next();
@@ -17,8 +25,9 @@ public class FunctionalVsImperativeDemo {
                 iterator.remove();
             }
         }
+    }
 
-        // functional processing
+    private static void functionalProcessing(final List<String> strings) {
         strings.removeIf(value -> value.isEmpty());
     }
 }
