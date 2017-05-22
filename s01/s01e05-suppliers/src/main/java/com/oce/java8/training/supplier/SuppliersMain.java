@@ -40,15 +40,13 @@ public class SuppliersMain {
 
         final Product product = productService.generateRandomProduct().get();
         System.out.println(product);
-
-        // TODO try other Product Suppliers
     }
 
     private static void sectionSuppliers() {
-        // TODO try a few Section Suppliers
+        // TODO create a method to generate a random section object
     }
 
     private static void managerSuppliers() {
-        // TODO try a few Manager Suppliers
+        // TODO create a method to generate a random manager object
     }
 }
