@@ -30,12 +30,12 @@ public class ProductService {
                                               .orElseThrow(() -> new IllegalArgumentException("There are no products"));
 
         return products.stream()
-                       .filter(samsungProductsFilter())
+                       .filter(samsungProducts())
                        .map(displayProduct())
                        .collect(Collectors.toSet());
     }
 
-    private Predicate<Product> samsungProductsFilter() {
+    private Predicate<Product> samsungProducts() {
         return product -> product.getName().contains("Samsung");
     }
 
