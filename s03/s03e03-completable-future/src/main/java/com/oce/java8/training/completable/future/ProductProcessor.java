@@ -5,6 +5,7 @@ import com.oce.java8.training.model.Section;
 import com.oce.java8.training.model.Store;
 import org.jooq.lambda.Unchecked;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +27,8 @@ class ProductProcessor {
             return store.getStoreSections()
                         .stream()
                         .map(Section::getProducts)
-                        .flatMap(Collection::stream)
+                        .flatMap(products -> products.orElse(new ArrayList<>())
+                                                     .stream())
                         .filter(product -> product.getName().contains(productName))
                         .count();
         });
