@@ -24,6 +24,8 @@ public class CompletableFutureMain {
 
         simpleCompletableFutures();
 
+        asyncExceptionHandling();
+
         chainedCompletionStages();
 
         simpleProductsOperations();
@@ -32,42 +34,43 @@ public class CompletableFutureMain {
 
         completingMultipleCompletionStages();
 
+        completingAnyCompletionStage();
+
         shutdownExecutor();
     }
 
     private static void helloSimpleCompletableFutures() {
         final CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
             displayCurrentThread();
-            return "I will run on Saturday";
+            return "Hello, CompletableFuture!";
         });
         System.out.println(completableFuture.join());
 
         completableFuture.thenAcceptAsync(value -> {
             displayCurrentThread();
-            System.out.println("The received value is " + value);
+            System.out.println("The received value is '" + value + "'");
         });
 
-        final CompletableFuture<String> exceptionally = completableFuture.exceptionally(ex -> "Some exception occurred");
-        System.out.println(exceptionally.join());
-
-        String processingResult = completableFuture.join();
-        System.out.println("The processing returned " + processingResult);
+        System.out.println("The processing returned " + completableFuture.join());
     }
 
     private static void simpleCompletableFutures() {
-        final CompletableFuture<String> completableFuture =
-                CompletableFuture.supplyAsync(() -> "a very simple text");
+        final CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "a very simple text");
 
         final Consumer<String> stringConsumer = stringPrinter();
         completableFuture.thenAcceptAsync(stringConsumer);
 
-        final CompletableFuture<String> anotherFuture =
-                CompletableFuture.supplyAsync(() -> "another text");
-
-        completableFuture.exceptionally(throwable -> "Thrown: " + throwable.getMessage());
+        final CompletableFuture<String> anotherFuture = CompletableFuture.supplyAsync(() -> "another text");
 
         completableFuture.thenApplyAsync(String::toUpperCase, Executors.newCachedThreadPool());
         completableFuture.acceptEither(anotherFuture, stringConsumer);
+    }
+
+    private static void asyncExceptionHandling() {
+        final CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "A random string");
+
+        final CompletableFuture<String> exceptionally = completableFuture.exceptionally(ex -> "Some exception occurred");
+        System.out.println(exceptionally.join());
     }
 
     private static void chainedCompletionStages() {
@@ -157,6 +160,18 @@ public class CompletableFutureMain {
                                                                .collect(Collectors.toList()));
         futureValues.join()
                     .forEach(System.out::println);
+    }
+
+    private static void completingAnyCompletionStage() {
+        final List<CompletableFuture<String>> completableFutures =
+                Stream.of("some random string values".split(" "))
+                      .map(value -> CompletableFuture.supplyAsync(() ->
+                                  Thread.currentThread().getName() + " - " + value + " - " + System.currentTimeMillis()))
+                      .collect(Collectors.toList());
+
+        final CompletableFuture<Object> anyStage = CompletableFuture.anyOf(
+                completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
+        System.out.println(anyStage.join());
     }
 
     private static void processResult(final String result, final Throwable exception) {
