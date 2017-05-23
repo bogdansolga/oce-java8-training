@@ -21,9 +21,6 @@ public class CompletableFutureMain {
     private static final Executor EXECUTOR = Executors.newWorkStealingPool(AVAILABLE_PROCESSORS / 2);
 
     public static void main(String[] args) {
-        completingMultipleCompletionStages();
-        if (true) return;
-
         helloSimpleCompletableFutures();
 
         simpleCompletableFutures();
@@ -52,6 +49,7 @@ public class CompletableFutureMain {
         });
 
         final CompletableFuture<String> exceptionally = completableFuture.exceptionally(ex -> "Some exception occurred");
+        System.out.println(exceptionally.join());
 
         String processingResult = completableFuture.join();
         System.out.println("The processing returned " + processingResult);
