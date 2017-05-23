@@ -1,11 +1,15 @@
 package com.oce.java8.training.completable.future;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * A few {@link java.util.concurrent.CompletableFuture} usage samples
@@ -17,6 +21,9 @@ public class CompletableFutureMain {
     private static final Executor EXECUTOR = Executors.newWorkStealingPool(AVAILABLE_PROCESSORS / 2);
 
     public static void main(String[] args) {
+        completingMultipleCompletionStages();
+        if (true) return;
+
         helloSimpleCompletableFutures();
 
         simpleCompletableFutures();
@@ -26,6 +33,8 @@ public class CompletableFutureMain {
         simpleProductsOperations();
 
         moreComplexProductsOperations();
+
+        completingMultipleCompletionStages();
 
         shutdownExecutor();
     }
@@ -133,6 +142,23 @@ public class CompletableFutureMain {
                                                     .whenCompleteAsync(CompletableFutureMain::processResult, EXECUTOR)
                                                     .join();
         System.out.println(productsText);
+    }
+
+    private static void completingMultipleCompletionStages() {
+        final List<CompletableFuture<String>> completableFutures =
+                Stream.of(50, 60, 70)
+                      .map(value -> CompletableFuture.supplyAsync(() -> Thread.currentThread().getName() + " - " + value * value))
+                      .collect(Collectors.toList());
+
+        final CompletableFuture<Void> allStages = CompletableFuture.allOf(
+                completableFutures.toArray(new CompletableFuture[completableFutures.size()]));
+
+        final CompletableFuture<List<String>> futureValues =
+                allStages.thenApply(value -> completableFutures.stream()
+                                                               .map(CompletableFuture::join)
+                                                               .collect(Collectors.toList()));
+        futureValues.join()
+                    .forEach(System.out::println);
     }
 
     private static void processResult(final String result, final Throwable exception) {
