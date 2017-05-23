@@ -146,8 +146,9 @@ public class CompletableFutureMain {
 
     private static void completingMultipleCompletionStages() {
         final List<CompletableFuture<String>> completableFutures =
-                Stream.of(50, 60, 70)
-                      .map(value -> CompletableFuture.supplyAsync(() -> Thread.currentThread().getName() + " - " + value * value))
+                Stream.of(50, 60, 70, 23, 35, 13, 11, 16, 53)
+                      .map(value -> CompletableFuture.supplyAsync(() ->
+                              Thread.currentThread().getName() + " - " + value * value + " - " + System.currentTimeMillis()))
                       .collect(Collectors.toList());
 
         final CompletableFuture<Void> allStages = CompletableFuture.allOf(
