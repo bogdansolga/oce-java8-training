@@ -2,18 +2,11 @@ package com.oce.java8.training.streams;
 
 import com.oce.java8.training.bootstrap.StoreSetup;
 import com.oce.java8.training.model.Product;
+import com.oce.java8.training.model.Section;
 import com.oce.java8.training.model.Store;
 import com.oce.java8.training.model.StoreSection;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
@@ -110,7 +103,7 @@ public class StreamsMain {
 
         List<Product> allProducts = store.getStoreSections()
                                          .stream()
-                                         .flatMap(section -> section.getProducts().stream())
+                                         .flatMap(section -> getProductsStream(section))
                                          .collect(Collectors.toList());
     }
 
@@ -155,7 +148,7 @@ public class StreamsMain {
         final Set<Product> tablets = store.getStoreSections()
                                           .stream()
                                           .filter(section -> section.getName().equals(StoreSection.Tablets))
-                                          .flatMap(section -> section.getProducts().stream())
+                                          .flatMap(section -> getProductsStream(section))
                                           .filter(product -> product.getName().contains("Apple"))
                                           .collect(Collectors.toSet());
 
@@ -214,5 +207,11 @@ public class StreamsMain {
         final Map<Integer, String> months = new HashMap<>();
         months.put(1, "Jan");
         months.put(2, "Feb");
+    }
+
+    private static Stream<Product> getProductsStream(final Section section) {
+        return section.getProducts()
+                      .orElse(new ArrayList<>())
+                      .stream();
     }
 }
